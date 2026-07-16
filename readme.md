@@ -12,13 +12,12 @@ It prompts for credentials on each connection and never stores them in the repos
 
 ## Install
 
-Clone the repository, then copy the scripts to your home directory:
+Clone the repository, then copy the helper to your home directory:
 
 ```bash
 cp .vpnStatus.sh ~/.vpnStatus.sh
-cp .motd.sh ~/.motd.sh
-chmod 700 ~/.vpnStatus.sh ~/.motd.sh
-printf "alias vpn='~/.vpnStatus.sh'\n~/.motd.sh\n" >> ~/.zshrc
+chmod 700 ~/.vpnStatus.sh
+printf "alias vpn='~/.vpnStatus.sh'\n" >> ~/.zshrc
 source ~/.zshrc
 ```
 
