@@ -55,6 +55,14 @@ Enter the VPN server and YubiKey code when prompted. macOS may ask for permissio
 
 - Choose **Allow Once** to require approval every time the helper retrieves a stored value. This is the recommended setting for a shared, managed, or higher-risk Mac.
 - Choose **Always Allow** only at your own risk on a trusted personal Mac. It removes the repeated Keychain prompt for this helper, but an attacker or malicious process running as your macOS user could potentially invoke the trusted Keychain access path without asking again. The YubiKey code is still required for each VPN connection.
+- To revoke a previous **Always Allow** choice completely, delete this helper's stored Keychain items and run `vpn --setup-keychain` again if needed:
+
+  ```bash
+  security delete-generic-password -s 'cisco-secure-client-cli-helper-username'
+  security delete-generic-password -s 'cisco-secure-client-cli-helper-password'
+  ```
+
+  These commands remove only the helper's saved username and password entries; they do not delete your macOS login keychain or any unrelated passwords.
 
 ## Security
 
