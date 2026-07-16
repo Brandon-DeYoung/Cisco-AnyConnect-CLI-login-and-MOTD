@@ -53,16 +53,12 @@ vpn --keychain
 
 Enter the VPN server and YubiKey code when prompted. macOS may ask for permission to retrieve each Keychain entry.
 
-After saving credentials, make Keychain mode the default by replacing your existing `vpn` alias in `~/.zshrc` with:
+After saving credentials, make Keychain mode the default with this command:
 
 ```zsh
-alias vpn='~/.vpnStatus.sh --keychain'
-```
-
-Then reload your shell:
-
-```zsh
-source ~/.zshrc
+sed -i '' '/^[[:space:]]*alias[[:space:]]\+vpn=/d; $a\
+alias vpn='\''~/.vpnStatus.sh --keychain'\''
+' ~/.zshrc && source ~/.zshrc
 ```
 
 Now run `vpn` to retrieve the stored username and password from Keychain. You will still enter the VPN server and YubiKey code when prompted.
