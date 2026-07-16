@@ -17,8 +17,9 @@ Clone the repository, then copy the helper to your home directory:
 ```bash
 cp .vpnStatus.sh ~/.vpnStatus.sh
 chmod 700 ~/.vpnStatus.sh
-printf "alias vpn='~/.vpnStatus.sh'\n" >> ~/.zshrc
-source ~/.zshrc
+sed -i '' '/^[[:space:]]*alias[[:space:]]\+vpn=/d; $a\
+alias vpn='\''~/.vpnStatus.sh'\''
+' ~/.zshrc && source ~/.zshrc
 ```
 
 For Bash, replace `.zshrc` with `.bashrc`.
