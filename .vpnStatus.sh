@@ -13,10 +13,8 @@ fi
 
 if [[ -x /opt/cisco/secureclient/bin/vpn ]]; then
   VPN_BIN=/opt/cisco/secureclient/bin/vpn
-elif [[ -x /opt/cisco/anyconnect/bin/vpn ]]; then
-  VPN_BIN=/opt/cisco/anyconnect/bin/vpn
 else
-  echo -e "${RED}Cisco Secure Client/AnyConnect CLI was not found.${NC}"
+  echo -e "${RED}Cisco Secure Client CLI was not found.${NC}"
   exit 1
 fi
 

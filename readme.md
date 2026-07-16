@@ -1,13 +1,13 @@
-# Cisco Secure Client CLI helper for macOS
+# Cisco Secure Client CLI Helper for macOS
 
-A small **macOS-only** Bash helper for Cisco Secure Client or Cisco AnyConnect VPNs that authenticate with a username, password, and appended YubiKey one-time code.
+A small **macOS-only** Bash helper for Cisco Secure Client VPNs that authenticate with a username, password, and appended YubiKey one-time code.
 
 It prompts for credentials on each connection and never stores them in the repository or in a credential file.
 
 ## Requirements
 
 - macOS
-- Cisco Secure Client or Cisco AnyConnect, including its command-line client
+- Cisco Secure Client, including its command-line client
 - A VPN profile that accepts username, password plus YubiKey code, and a `y` response to any login banner
 
 ## Install
