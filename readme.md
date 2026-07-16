@@ -62,7 +62,7 @@ Enter the VPN server and YubiKey code when prompted. macOS may ask for permissio
   security delete-generic-password -s 'cisco-secure-client-cli-helper-password'
   ```
 
-  These commands remove only the helper's saved username and password entries; they do not delete your macOS login keychain or any unrelated passwords.
+  These commands delete the helper's two VPN entries from your macOS login Keychain. They do not delete the login Keychain itself or any unrelated passwords.
 
 ## Security
 
