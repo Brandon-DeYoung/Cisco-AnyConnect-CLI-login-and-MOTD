@@ -51,7 +51,10 @@ Connect with the stored credentials:
 vpn --keychain
 ```
 
-Enter the VPN server and YubiKey code when prompted. macOS may ask for permission to retrieve each Keychain entry. Choose **Allow Once** to avoid permanently granting the script access.
+Enter the VPN server and YubiKey code when prompted. macOS may ask for permission to retrieve each Keychain entry.
+
+- Choose **Allow Once** to require approval every time the helper retrieves a stored value. This is the recommended setting for a shared, managed, or higher-risk Mac.
+- Choose **Always Allow** only at your own risk on a trusted personal Mac. It removes the repeated Keychain prompt for this helper, but an attacker or malicious process running as your macOS user could potentially invoke the trusted Keychain access path without asking again. The YubiKey code is still required for each VPN connection.
 
 ## Security
 
