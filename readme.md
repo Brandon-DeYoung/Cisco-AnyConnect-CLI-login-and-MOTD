@@ -40,7 +40,6 @@ When connected, the command offers to disconnect.
 - Do not add passwords, YubiKey codes, server names, usernames, or other private details to this repository.
 - The script does not write credentials to disk. It clears the password and YubiKey variables after the connection command.
 - Avoid shell history entries that include secrets.
-- For stronger at-rest protection, adapt the script to retrieve secrets from macOS Keychain rather than creating a plaintext credential file.
 
 ## Limitations
 
