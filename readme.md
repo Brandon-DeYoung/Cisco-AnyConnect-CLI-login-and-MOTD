@@ -2,7 +2,7 @@
 
 A small **macOS-only** Bash helper for Cisco Secure Client VPNs that authenticate with a username, password, and appended YubiKey one-time code.
 
-It prompts for credentials on each connection and never stores them in the repository or in a credential file.
+By default it prompts for credentials on each connection. Users can optionally store one username and password in their local macOS Keychain.
 
 ## Requirements
 
@@ -35,10 +35,28 @@ When disconnected, enter your VPN server, username, password, and YubiKey code. 
 
 When connected, the command offers to disconnect.
 
+## Optional macOS Keychain storage
+
+To store one VPN username and password in the local login Keychain, run:
+
+```bash
+vpn --setup-keychain
+```
+
+Enter the base password only; do not append the YubiKey code. The script creates separate Keychain entries for the username and password, without granting automatic application access.
+
+Connect with the stored credentials:
+
+```bash
+vpn --keychain
+```
+
+Enter the VPN server and YubiKey code when prompted. macOS may ask for permission to retrieve each Keychain entry. Choose **Allow Once** to avoid permanently granting the script access.
+
 ## Security
 
 - Do not add passwords, YubiKey codes, server names, usernames, or other private details to this repository.
-- The script does not write credentials to disk. It clears the password and YubiKey variables after the connection command.
+- The script does not write credentials to disk. Keychain mode stores credentials in the local login Keychain; prompt mode stores them only in memory. Both modes clear the password and YubiKey variables after the connection command.
 - Avoid shell history entries that include secrets.
 
 ## Limitations

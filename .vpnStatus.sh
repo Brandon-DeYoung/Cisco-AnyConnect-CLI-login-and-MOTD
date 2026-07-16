@@ -5,11 +5,71 @@ set -u
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 NC='\033[0m'
+KEYCHAIN_USERNAME_SERVICE='cisco-secure-client-cli-helper-username'
+KEYCHAIN_PASSWORD_SERVICE='cisco-secure-client-cli-helper-password'
+
+usage() {
+  cat <<'EOF'
+Usage:
+  vpn                    Prompt for username and password on every connection.
+  vpn --setup-keychain   Store one username and password in the macOS Keychain.
+  vpn --keychain         Retrieve the stored username and password from Keychain.
+EOF
+}
+
+setup_keychain() {
+  read -r -p 'Username to store in Keychain: ' keychain_username
+  if [[ -z "$keychain_username" ]]; then
+    echo -e "${RED}A username is required.${NC}"
+    exit 1
+  fi
+
+  # -T '' prevents automatic access by applications, including this script.
+  security add-generic-password \
+    -a "$keychain_username" \
+    -s "$KEYCHAIN_USERNAME_SERVICE" \
+    -l 'Cisco Secure Client CLI Helper Username' \
+    -T '' \
+    -U \
+    -w "$keychain_username"
+
+  echo 'Enter the VPN password when prompted. Do not append the YubiKey code.'
+  security add-generic-password \
+    -a "$keychain_username" \
+    -s "$KEYCHAIN_PASSWORD_SERVICE" \
+    -l 'Cisco Secure Client CLI Helper Password' \
+    -T '' \
+    -U \
+    -w
+
+  echo -e "${GREEN}Credentials saved to Keychain. Connect with: vpn --keychain${NC}"
+}
 
 if [[ "$OSTYPE" != darwin* ]]; then
   echo -e "${RED}This script supports macOS only.${NC}"
   exit 1
 fi
+
+use_keychain=false
+case "${1:-}" in
+  --setup-keychain)
+    setup_keychain
+    exit 0
+    ;;
+  --keychain)
+    use_keychain=true
+    ;;
+  --help|-h)
+    usage
+    exit 0
+    ;;
+  '')
+    ;;
+  *)
+    usage >&2
+    exit 1
+    ;;
+esac
 
 if [[ -x /opt/cisco/secureclient/bin/vpn ]]; then
   VPN_BIN=/opt/cisco/secureclient/bin/vpn
@@ -26,9 +86,22 @@ status=$(vpn_state)
 
 if [[ $status == *'state: Disconnected'* ]]; then
   read -r -p 'VPN server: ' vpn_host
-  read -r -p 'Username: ' vpn_username
-  read -r -s -p 'Password: ' vpn_password
-  echo
+
+  if "$use_keychain"; then
+    if ! vpn_username=$(security find-generic-password -s "$KEYCHAIN_USERNAME_SERVICE" -w); then
+      echo -e "${RED}Could not retrieve the VPN username from Keychain.${NC}"
+      exit 1
+    fi
+    if ! vpn_password=$(security find-generic-password -s "$KEYCHAIN_PASSWORD_SERVICE" -w); then
+      echo -e "${RED}Could not retrieve the VPN password from Keychain.${NC}"
+      exit 1
+    fi
+  else
+    read -r -p 'Username: ' vpn_username
+    read -r -s -p 'Password: ' vpn_password
+    echo
+  fi
+
   read -r -s -p 'YubiKey code: ' yubi_code
   echo
 
