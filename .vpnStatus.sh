@@ -7,24 +7,34 @@ RED='\033[0;31m'
 NC='\033[0m'
 KEYCHAIN_USERNAME_SERVICE='cisco-secure-client-cli-helper-username'
 KEYCHAIN_PASSWORD_SERVICE='cisco-secure-client-cli-helper-password'
+KEYCHAIN_SERVER_SERVICE='cisco-secure-client-cli-helper-server'
 
 usage() {
   cat <<'EOF'
 Usage:
   vpn                    Prompt for username and password on every connection.
-  vpn --setup-keychain   Store one username and password in the macOS Keychain.
-  vpn --keychain         Retrieve the stored username and password from Keychain.
+  vpn --setup-keychain   Store one VPN server, username, and password in Keychain.
+  vpn --keychain         Retrieve the stored VPN server and credentials from Keychain.
 EOF
 }
 
 setup_keychain() {
+  read -r -p 'VPN server to store in Keychain: ' keychain_server
   read -r -p 'Username to store in Keychain: ' keychain_username
-  if [[ -z "$keychain_username" ]]; then
-    echo -e "${RED}A username is required.${NC}"
+  if [[ -z "$keychain_server" || -z "$keychain_username" ]]; then
+    echo -e "${RED}A VPN server and username are required.${NC}"
     exit 1
   fi
 
   # -T '' prevents automatic access by applications, including this script.
+  security add-generic-password \
+    -a "$keychain_username" \
+    -s "$KEYCHAIN_SERVER_SERVICE" \
+    -l 'Cisco Secure Client CLI Helper Server' \
+    -T '' \
+    -U \
+    -w "$keychain_server"
+
   security add-generic-password \
     -a "$keychain_username" \
     -s "$KEYCHAIN_USERNAME_SERVICE" \
@@ -85,9 +95,11 @@ vpn_state() {
 status=$(vpn_state)
 
 if [[ $status == *'state: Disconnected'* ]]; then
-  read -r -p 'VPN server: ' vpn_host
-
   if "$use_keychain"; then
+    if ! vpn_host=$(security find-generic-password -s "$KEYCHAIN_SERVER_SERVICE" -w); then
+      echo -e "${RED}Could not retrieve the VPN server from Keychain.${NC}"
+      exit 1
+    fi
     if ! vpn_username=$(security find-generic-password -s "$KEYCHAIN_USERNAME_SERVICE" -w); then
       echo -e "${RED}Could not retrieve the VPN username from Keychain.${NC}"
       exit 1
@@ -97,6 +109,7 @@ if [[ $status == *'state: Disconnected'* ]]; then
       exit 1
     fi
   else
+    read -r -p 'VPN server: ' vpn_host
     read -r -p 'Username: ' vpn_username
     read -r -s -p 'Password: ' vpn_password
     echo

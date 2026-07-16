@@ -2,7 +2,7 @@
 
 A small **macOS-only** Bash helper for Cisco Secure Client VPNs that authenticate with a username, password, and appended YubiKey one-time code.
 
-By default it prompts for credentials on each connection. Users can optionally store one username and password in their local macOS Keychain.
+By default it prompts for connection details on each connection. Users can optionally store one VPN server, username, and password in their local macOS Keychain.
 
 > **Important:** Fully quit the Cisco Secure Client app before using this CLI helper. Closing its window may not be enough; choose **Cisco Secure Client → Quit** so the app releases the VPN connection capability.
 
@@ -40,13 +40,13 @@ When connected, the command offers to disconnect.
 
 ## Optional macOS Keychain storage
 
-To store one VPN username and password in the local login Keychain, run:
+To store one VPN server, username, and password in the local login Keychain, run:
 
 ```bash
 vpn --setup-keychain
 ```
 
-Enter the base password only; do not append the YubiKey code. The script creates separate Keychain entries for the username and password, without granting automatic application access.
+Enter the base password only; do not append the YubiKey code. The script creates separate Keychain entries for the VPN server, username, and password, without granting automatic application access.
 
 Connect with the stored credentials:
 
@@ -54,7 +54,7 @@ Connect with the stored credentials:
 vpn --keychain
 ```
 
-Enter the VPN server and YubiKey code when prompted. macOS may ask for permission to retrieve each Keychain entry.
+Enter the YubiKey code when prompted. macOS may ask for permission to retrieve each Keychain entry.
 
 After saving credentials, make Keychain mode the default with this command:
 
@@ -71,11 +71,12 @@ Now run `vpn` to retrieve the stored username and password from Keychain. You wi
 - To revoke a previous **Always Allow** choice completely, delete this helper's stored Keychain items and run `vpn --setup-keychain` again if needed:
 
   ```bash
+  security delete-generic-password -s 'cisco-secure-client-cli-helper-server'
   security delete-generic-password -s 'cisco-secure-client-cli-helper-username'
   security delete-generic-password -s 'cisco-secure-client-cli-helper-password'
   ```
 
-  These commands delete the helper's two VPN entries from your macOS login Keychain. They do not delete the login Keychain itself or any unrelated passwords.
+  These commands delete the helper's three VPN entries from your macOS login Keychain. They do not delete the login Keychain itself or any unrelated passwords.
 
 ## Security
 
