@@ -4,6 +4,8 @@ A small **macOS-only** Bash helper for Cisco Secure Client VPNs that authenticat
 
 By default it prompts for credentials on each connection. Users can optionally store one username and password in their local macOS Keychain.
 
+> **Important:** Fully quit the Cisco Secure Client app before using this CLI helper. Closing its window may not be enough; choose **Cisco Secure Client → Quit** so the app releases the VPN connection capability.
+
 ## Requirements
 
 - macOS
