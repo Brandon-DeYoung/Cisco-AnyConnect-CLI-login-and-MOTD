@@ -61,25 +61,31 @@ if [[ "$OSTYPE" != darwin* ]]; then
 fi
 
 use_keychain=false
-case "${1:-}" in
-  --setup-keychain)
-    setup_keychain
-    exit 0
-    ;;
-  --keychain)
-    use_keychain=true
-    ;;
-  --help|-h)
-    usage
-    exit 0
-    ;;
-  '')
-    ;;
-  *)
-    usage >&2
-    exit 1
-    ;;
-esac
+setup_keychain_requested=false
+
+for argument in "$@"; do
+  case "$argument" in
+    --setup-keychain)
+      setup_keychain_requested=true
+      ;;
+    --keychain)
+      use_keychain=true
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    *)
+      usage >&2
+      exit 1
+      ;;
+  esac
+done
+
+if "$setup_keychain_requested"; then
+  setup_keychain
+  exit 0
+fi
 
 if [[ -x /opt/cisco/secureclient/bin/vpn ]]; then
   VPN_BIN=/opt/cisco/secureclient/bin/vpn

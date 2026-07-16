@@ -48,6 +48,8 @@ vpn --setup-keychain
 
 Enter the base password only; do not append the YubiKey code. The script creates separate Keychain entries for the VPN server, username, and password, without granting automatic application access.
 
+This command also works when `vpn` is already aliased to use `--keychain` by default.
+
 Connect with the stored credentials:
 
 ```bash
